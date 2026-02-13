@@ -1,10 +1,10 @@
-#  California Housing Price Prediction
+# California Housing Price Prediction
 
 A machine learning project that predicts California housing prices using census block-level data, comparing the performance of multiple regression models.
 
 ---
 
-##  Project Structure
+## Project Structure
 
 ```
 ├── CA_housing_price_prediction.ipynb   # Main analysis notebook
@@ -14,7 +14,7 @@ A machine learning project that predicts California housing prices using census 
 
 ---
 
-##  Dataset
+## Dataset
 
 Uses the **California Housing Dataset** with **20,640** census block-level records:
 
@@ -32,7 +32,7 @@ Uses the **California Housing Dataset** with **20,640** census block-level recor
 
 ---
 
-##  Workflow
+## Workflow
 
 ### 1. Exploratory Data Analysis (EDA)
 - Descriptive statistics (mean, std, quantiles)
@@ -52,23 +52,34 @@ Uses the **California Housing Dataset** with **20,640** census block-level recor
 
 ---
 
-##  Models & Results
+## Models & Results
 
-All models are evaluated using **5-fold cross-validation** with RMSE and R² as metrics.
+All models are evaluated using **5-fold cross-validation**. Final test set performance is reported for the best model.
 
 | Model | Avg R² (CV) | Avg RMSE (CV) |
 |-------|:-----------:|:-------------:|
 | Linear Regression | ~0.648 | ~$68,623 |
 | Ridge (alpha=10) | ~0.648 | ~$68,623 |
 | Lasso (alpha=32.37) | ~0.648 | ~$68,623 |
-| **Random Forest** (100 trees) | **~0.818** | **~$49,266** |
-| XGBoost (tuned) | in progress | in progress |
+| Random Forest (100 trees) | ~0.818 | ~$49,266 |
+| **XGBoost (tuned)** | **~0.836** | **~$49,266** |
 
-> Ridge's best alpha was found via `GridSearchCV`; Lasso's via `LassoCV` over a log-spaced search grid. XGBoost hyperparameters (`learning_rate`, `max_depth`, `n_estimators`, `colsample_bytree`) are tuned with `RandomizedSearchCV`.
+**XGBoost final test set performance:**
+
+| Metric | Value |
+|--------|-------|
+| R² | 0.8327 |
+| RMSE | $46,815 |
+| MSE | 2,191,674,302 |
+
+### Hyperparameter Tuning
+- **Ridge**: best `alpha=10` found via `GridSearchCV`
+- **Lasso**: best `alpha=32.37` found via `LassoCV` over a log-spaced search grid
+- **XGBoost**: best params `{n_estimators: 100, max_depth: 7, learning_rate: 0.1, colsample_bytree: 0.5}` found via `RandomizedSearchCV` (20 iterations, 5-fold CV)
 
 ---
 
-##  Requirements
+## Requirements
 
 ```bash
 pip install pandas numpy matplotlib seaborn statsmodels scikit-learn xgboost
@@ -78,7 +89,7 @@ Recommended: Python 3.13+ with Anaconda.
 
 ---
 
-##  Getting Started
+## Getting Started
 
 1. Place `housing.csv` in the `archive/` directory
 2. Launch the notebook:
@@ -89,9 +100,9 @@ Recommended: Python 3.13+ with Anaconda.
 
 ---
 
-##  Key Findings
+## Key Findings
 
-- Linear models (Linear Regression, Ridge, Lasso) perform similarly with R² ≈ **0.648**, indicating a clear non-linear modeling ceiling.
-- **Random Forest** significantly outperforms linear models, achieving R² ≈ **0.818** and reducing RMSE to ~$49,000.
-- XGBoost with hyperparameter tuning is expected to push performance even further.
+- Linear models (Linear Regression, Ridge, Lasso) perform similarly at R² ≈ **0.648**, revealing a clear non-linear modeling ceiling.
+- **Random Forest** significantly outperforms linear models with R² ≈ **0.818**, cutting RMSE nearly in half.
+- **XGBoost** achieves the best overall performance at R² ≈ **0.836** (CV) and **0.833** on the held-out test set, with RMSE of ~$46,815.
 - `median_income` is the strongest predictor of house value; geographic location (latitude/longitude) also plays an important role.
